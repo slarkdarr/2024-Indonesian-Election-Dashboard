@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './Chart.css';
@@ -27,15 +27,15 @@ const SentimentMap = ({ data }) => {
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {data.map((location) => (
             <Marker key={location.id} position={location.coords}>
-              <Popup>
-                {location.name}
+              <Tooltip>
+                <span>{location.name}</span>
                 <br />
-                Positive: {location.positive}
+                <span>Positive: {location.positive}</span>
                 <br />
-                Negative: {location.negative}
+                <span>Negative: {location.negative}</span>
                 <br />
-                Neutral: {location.neutral}
-              </Popup>
+                <span>Neutral: {location.neutral}</span>
+              </Tooltip>
             </Marker>
           ))}
         </MapContainer>
