@@ -1,0 +1,63 @@
+.venn-diagram {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 200px; /* Increased height */
+}
+
+.circle {
+  border-radius: 50%;
+  width: 150px; /* Increased width */
+  height: 150px; /* Increased height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 1.2rem; /* Increased font size */
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.positive {
+  background-color: #4caf50; /* Green */
+}
+
+.negative {
+  background-color: #f44336; /* Red */
+}
+
+.neutral {
+  background-color: #9e9e9e; /* Grey */
+}
+
+.top-videos-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.top-videos-table th,
+.top-videos-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.top-videos-table th {
+  background-color: #f0f4f8;
+  color: #333;
+}
+
+.map-container {
+  height: 300px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
