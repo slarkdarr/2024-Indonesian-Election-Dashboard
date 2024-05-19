@@ -69,6 +69,11 @@ const Dashboard = () => {
       filtered.averageViewsData = hours;
     }
 
+    // Sort top videos by total likes and comments
+    filtered.topVideos = filtered.topVideos.sort(
+      (a, b) => b.likes + b.comments - (a.likes + a.comments)
+    );
+
     setFilteredData(filtered);
   }, [selectedMonth, selectedDate]);
 
