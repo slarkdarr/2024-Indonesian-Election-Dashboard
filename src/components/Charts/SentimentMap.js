@@ -20,19 +20,26 @@ const SentimentMap = ({ data }) => {
   }
 
   const [coordinatesMap, setCoordinatesMap] = useState({});
+  const [countryNamesMap, setCountryNamesMap] = useState({});
 
   useEffect(() => {
     // Fetch country coordinates data
     fetch("/country_coordinates.json")
       .then((response) => response.json())
-      .then((data) => {
-        setCoordinatesMap(data);
-      });
+      .then((data) => setCoordinatesMap(data));
+
+    fetch('/country_names.json')
+      .then((response) => response.json())
+      .then((data) => setCountryNamesMap(data));
   }, []);
 
   const getCoordinates = (countryCode) => {
     console.log(countryCode, coordinatesMap[countryCode]);
     return coordinatesMap[countryCode] || [0, 0]; // Default to [0, 0] if not found
+  };
+
+  const getCountryName = (countryCode) => {
+    return countryNamesMap[countryCode] || [0, 0]; // Default to [0, 0] if not found
   };
 
   return (
@@ -51,7 +58,7 @@ const SentimentMap = ({ data }) => {
               position={getCoordinates(location.location)}
             >
               <Tooltip>
-                <span>{location.location}</span>
+                <span>{getCountryName(location.location)}</span>
                 <br />
                 <span>Positive: {location.positive}</span>
                 <br />
