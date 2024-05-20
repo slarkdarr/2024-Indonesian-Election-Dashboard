@@ -15,17 +15,28 @@ L.Icon.Default.mergeOptions({
 });
 
 const SentimentMap = ({ data }) => {
+  if (!data || data.length === 0) {
+    return <div>No data available.</div>;
+  }
   const [coordinatesMap, setCoordinatesMap] = useState({});
+  const [countryNamesMap, setCountryNamesMap] = useState({});
 
   useEffect(() => {
-    // Fetch country coordinates data
     fetch('/country_coordinates.json')
       .then((response) => response.json())
       .then((data) => setCoordinatesMap(data));
+
+    fetch('/country_names.json')
+      .then((response) => response.json())
+      .then((data) => setCountryNamesMap(data));
   }, []);
 
   const getCoordinates = (countryCode) => {
     return coordinatesMap[countryCode] || [0, 0]; // Default to [0, 0] if not found
+  };
+
+  const getCountryName = (countryCode) => {
+    return countryNamesMap[countryCode] || [0, 0]; // Default to [0, 0] if not found
   };
 
   return (
@@ -33,18 +44,18 @@ const SentimentMap = ({ data }) => {
       <div className="chart-title">Sentiment Based on Location</div>
       <div className="map-container">
         <MapContainer
-          center={[-2.5, 117.5]}
-          zoom={5}
+          center={[20.593684, 78.96288]}
+          zoom={1}
           className="leaflet-container"
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {data.map((location) => (
             <Marker
-              key={location.id}
-              position={getCoordinates(location.countryCode)}
+              key={location.location}
+              position={getCoordinates(location.location)}
             >
               <Tooltip>
-                <span>{location.name}</span>
+                <span>{getCountryName(location.location)}</span>
                 <br />
                 <span>Positive: {location.positive}</span>
                 <br />
