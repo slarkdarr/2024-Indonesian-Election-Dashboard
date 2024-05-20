@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -15,6 +15,19 @@ L.Icon.Default.mergeOptions({
 });
 
 const SentimentMap = ({ data }) => {
+  const [coordinatesMap, setCoordinatesMap] = useState({});
+
+  useEffect(() => {
+    // Fetch country coordinates data
+    fetch('/country_coordinates.json')
+      .then((response) => response.json())
+      .then((data) => setCoordinatesMap(data));
+  }, []);
+
+  const getCoordinates = (countryCode) => {
+    return coordinatesMap[countryCode] || [0, 0]; // Default to [0, 0] if not found
+  };
+
   return (
     <div className="chart-container">
       <div className="chart-title">Sentiment Based on Location</div>
@@ -26,7 +39,10 @@ const SentimentMap = ({ data }) => {
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {data.map((location) => (
-            <Marker key={location.id} position={location.coords}>
+            <Marker
+              key={location.id}
+              position={getCoordinates(location.countryCode)}
+            >
               <Tooltip>
                 <span>{location.name}</span>
                 <br />
