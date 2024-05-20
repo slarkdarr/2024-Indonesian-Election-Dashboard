@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import Filters from '../Filters/Filters';
-import ViewsChart from '../Charts/ViewsChart';
-import SentimentMap from '../Charts/SentimentMap';
-import SentimentVenn from '../Charts/SentimentVenn';
-import AverageViewsChart from '../Charts/AverageViewsChart';
-import TopVideosTable from '../Charts/TopVideosTable';
-import mockData from '../../data/mockData';
-import './Dashboard.css';
+import React, { useState, useEffect } from "react";
+import Filters from "../Filters/Filters";
+import ViewsChart from "../Charts/ViewsChart";
+import SentimentMap from "../Charts/SentimentMap";
+import SentimentVenn from "../Charts/SentimentVenn";
+import AverageViewsChart from "../Charts/AverageViewsChart";
+import TopVideosTable from "../Charts/TopVideosTable";
+import mockData from "../../data/mockData";
+import "./Dashboard.css";
+import axios from "axios";
 
 const Dashboard = () => {
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
   const [filteredData, setFilteredData] = useState(mockData);
+  const [statsData, setStatsData] = useState("");
+  const [viewsData, setViewsData] = useState("");
+  const [avgViewsData, setAvgViewsData] = useState("");
+  const [topVideosData, setTopVideosData] = useState("");
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
@@ -75,17 +80,54 @@ const Dashboard = () => {
     );
 
     setFilteredData(filtered);
+
+    const fetchData = async () => {
+      // Stats Data
+      try {
+        const response = await axios.get("http://api:3000/stats");
+        const data = response.data;
+        setStatsData(data.values); 
+      } catch (error) {
+        console.error("Error:", error);
+      }
+      // Views Data
+      try {
+        const response = await axios.get("http://api:3000/views/recent-monthly");
+        const data = response.data;
+        setViewsData(data.values); 
+      } catch (error) {
+        console.error("Error:", error);
+      }
+      // Avg Views Data
+      try {
+        const response = await axios.get("http://api:3000/views/average?filter=dayNight");
+        const data = response.data;
+        setAvgViewsData(data.values); 
+      } catch (error) {
+        console.error("Error:", error);
+      }
+      // Top Videos Data
+      try {
+        const response = await axios.get("http://api:3000/videos/sorted?limit=10");
+        const data = response.data;
+        setTopVideosData(data.values); 
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchData();
   }, [selectedMonth, selectedDate]);
 
   // Calculate overview values based on filtered data
-  const totalVideos = filteredData.viewsData.length;
-  const totalDuration = totalVideos * 20 * 60; // Assume each video is 20 minutes
+  const totalVideos = statsData.total_rows;
+  const totalDuration = statsData.total_duration; // Assume each video is 20 minutes
   const averageDuration = totalVideos ? totalDuration / totalVideos : 0;
 
   const formatDuration = (seconds) => {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const secs = Math.floor(seconds % 60);
     return `${hrs}H ${mins}M ${secs}S`;
   };
 
@@ -103,16 +145,16 @@ const Dashboard = () => {
       </div>
       <div className="charts">
         <ViewsChart
-          data={filteredData.viewsData}
-          xAxisKey={selectedDate ? 'hour' : 'date'}
+          data={viewsData}
+          xAxisKey={selectedDate ? "hour" : "date"}
         />
         <SentimentMap data={filteredData.sentimentData} />
         <SentimentVenn data={filteredData.sentimentData} />
         <AverageViewsChart
-          data={filteredData.averageViewsData}
-          xAxisKey={selectedDate ? 'hour' : 'date'}
+          data={avgViewsData}
+          xAxisKey={selectedDate ? "hour" : "date"}
         />
-        <TopVideosTable data={filteredData.topVideos} />
+        <TopVideosTable data={topVideosData} />
       </div>
     </div>
   );

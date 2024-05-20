@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   LineChart,
   Line,
@@ -6,8 +6,8 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-} from 'recharts';
-import './Chart.css';
+} from "recharts";
+import "./Chart.css";
 
 const ViewsChart = ({ data, xAxisKey }) => {
   return (
@@ -18,7 +18,7 @@ const ViewsChart = ({ data, xAxisKey }) => {
         <YAxis />
         <Tooltip />
         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-        <Line type="monotone" dataKey="views" stroke="#8884d8" />
+        <Line type="monotone" dataKey="viewCount" stroke="#8884d8" />
       </LineChart>
     </div>
   );

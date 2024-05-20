@@ -1,7 +1,10 @@
-import React from 'react';
-import './Chart.css';
+import React from "react";
+import "./Chart.css";
 
 const TopVideosTable = ({ data }) => {
+  if (!data || data.length === 0) {
+    return <div>No data available.</div>;
+  }
   return (
     <div className="chart-container">
       <div className="chart-title">Top Like & Comment Count of Each Video</div>
@@ -15,10 +18,10 @@ const TopVideosTable = ({ data }) => {
         </thead>
         <tbody>
           {data.map((video) => (
-            <tr key={video.id}>
+            <tr key={video.videoId}>
               <td>{video.title}</td>
-              <td>{video.likes}</td>
-              <td>{video.comments}</td>
+              <td>{video.likeCount}</td>
+              <td>{video.commentCount}</td>
             </tr>
           ))}
         </tbody>
