@@ -183,7 +183,7 @@ const Dashboard = () => {
           data={viewsData}
           xAxisKey={selectedDate ? "hour" : "date"}
         />
-        {/* <SentimentMap data={sentimentLocData} /> */}
+        <SentimentMap data={sentimentLocData} />
         <SentimentPieChart data={sentimentData} />
         <AverageViewsChart
           data={avgViewsData}
