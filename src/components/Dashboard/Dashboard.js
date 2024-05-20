@@ -1,23 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import Filters from '../Filters/Filters';
-import ViewsChart from '../Charts/ViewsChart';
-import SentimentMap from '../Charts/SentimentMap';
-import SentimentPieChart from '../Charts/SentimentPieChart';
-import AverageViewsChart from '../Charts/AverageViewsChart';
-import TopVideosTable from '../Charts/TopVideosTable';
-import mockData from '../../data/mockData';
-import './Dashboard.css';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import Filters from "../Filters/Filters";
+import ViewsChart from "../Charts/ViewsChart";
+import SentimentMap from "../Charts/SentimentMap";
+import SentimentPieChart from "../Charts/SentimentPieChart";
+import AverageViewsChart from "../Charts/AverageViewsChart";
+import TopVideosTable from "../Charts/TopVideosTable";
+import mockData from "../../data/mockData";
+import "./Dashboard.css";
+import axios from "axios";
 
 const Dashboard = () => {
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
   const [filteredData, setFilteredData] = useState(mockData);
-  const [statsData, setStatsData] = useState('');
-  const [viewsData, setViewsData] = useState('');
-  const [avgViewsData, setAvgViewsData] = useState('');
-  const [topVideosData, setTopVideosData] = useState('');
+  const [statsData, setStatsData] = useState("");
+  const [viewsData, setViewsData] = useState("");
+  const [avgViewsData, setAvgViewsData] = useState("");
+  const [topVideosData, setTopVideosData] = useState("");
+  const [sentimentData, setSentimentData] = useState("");
+  const [sentimentLocData, setSentimentLocData] = useState("");
 
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value);
+  };
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
@@ -28,6 +34,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     let filtered = { ...mockData };
+    console.log(selectedMonth);
+    console.log(selectedYear);
 
     // Filter by month
     if (selectedMonth) {
@@ -84,41 +92,61 @@ const Dashboard = () => {
     const fetchData = async () => {
       // Stats Data
       try {
-        const response = await axios.get('http://api:3000/stats');
+        const response = await axios.get(
+          `http://api:3000/stats?year=${selectedYear}&month=${selectedMonth}`
+        );
         const data = response.data;
         setStatsData(data.values);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
       // Views Data
       try {
         const response = await axios.get(
-          'http://api:3000/views/recent-monthly'
+          `http://api:3000/views/recent-monthly?year=${selectedYear}&month=${selectedMonth}`
         );
         const data = response.data;
         setViewsData(data.values);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
       // Avg Views Data
       try {
         const response = await axios.get(
-          'http://api:3000/views/average?filter=dayNight'
+          `http://api:3000/views/average?filter=dayNight&year=${selectedYear}&month=${selectedMonth}`
         );
         const data = response.data;
         setAvgViewsData(data.values);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
       // Top Videos Data
       try {
         const response = await axios.get(
-          'http://api:3000/videos/sorted?limit=10'
+          `http://api:3000/videos/sorted?limit=10&year=${selectedYear}&month=${selectedMonth}`
         );
         const data = response.data;
         setTopVideosData(data.values);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
+      }
+      // Sentiment Data
+      try {
+        const response = await axios.get(`http://api:3000/sentiments?year=${selectedYear}&month=${selectedMonth}`);
+        const data = response.data;
+        setSentimentData(data.values[0]);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+      // Sentiment Location Data
+      try {
+        const response = await axios.get(
+          `http://api:3000/sentiments?group=location&year=${selectedYear}&month=${selectedMonth}`
+        );
+        const data = response.data;
+        setSentimentLocData(data.values);
+      } catch (error) {
+        console.error("Error:", error);
       }
     };
 
@@ -141,8 +169,9 @@ const Dashboard = () => {
     <div className="dashboard">
       <h1>Overview of 2024 Indonesian Election</h1>
       <Filters
+        onYearChange={handleYearChange}
         onMonthChange={handleMonthChange}
-        onDateChange={handleDateChange}
+        // onDateChange={handleDateChange}
       />
       <div className="stats">
         <div>Total Video: {totalVideos}</div>
@@ -152,13 +181,13 @@ const Dashboard = () => {
       <div className="charts">
         <ViewsChart
           data={viewsData}
-          xAxisKey={selectedDate ? 'hour' : 'date'}
+          xAxisKey={selectedDate ? "hour" : "date"}
         />
-        <SentimentMap data={filteredData.sentimentData} />
-        <SentimentPieChart data={filteredData.sentimentData} />
+        {/* <SentimentMap data={sentimentLocData} /> */}
+        <SentimentPieChart data={sentimentData} />
         <AverageViewsChart
           data={avgViewsData}
-          xAxisKey={selectedDate ? 'hour' : 'date'}
+          xAxisKey={selectedDate ? "hour" : "date"}
         />
         <TopVideosTable data={topVideosData} />
       </div>

@@ -1,14 +1,17 @@
-import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import './Chart.css';
+import React from "react";
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import "./Chart.css";
 
 const SentimentPieChart = ({ data }) => {
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+  if (!data) {
+    return <div>No data available.</div>;
+  }
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
   const sentimentData = [
-    { name: 'Positive', value: data.positive || 0 },
-    { name: 'Negative', value: data.negative || 0 },
-    { name: 'Neutral', value: data.neutral || 0 },
+    { name: "Positive", value: Number.parseInt(data.positive) || 0 },
+    { name: "Negative", value: Number.parseInt(data.negative) || 0 },
+    { name: "Neutral", value: Number.parseInt(data.neutral) || 0 },
   ];
 
   return (
