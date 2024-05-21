@@ -6,7 +6,7 @@ const SentimentPieChart = ({ data }) => {
   if (!data) {
     return <div>No data available.</div>;
   }
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+  const COLORS = ["#00C49F", "#FF8042", "#FFBB28"];
 
   const sentimentData = [
     { name: "Positive", value: Number.parseInt(data.positive) || 0 },

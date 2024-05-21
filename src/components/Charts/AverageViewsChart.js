@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   LineChart,
   Line,
@@ -6,15 +6,15 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-} from 'recharts';
-import './Chart.css';
+} from "recharts";
+import "./Chart.css";
 
 const AverageViewsChart = ({ data, xAxisKey }) => {
   return (
     <div className="chart-container">
       <div className="chart-title">Average Views Day vs Night</div>
       <LineChart width={550} height={300} data={data}>
-        <XAxis dataKey={xAxisKey} />
+        <XAxis dataKey={xAxisKey} angle={-45} textAnchor="end" />
         <YAxis />
         <Tooltip />
         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
